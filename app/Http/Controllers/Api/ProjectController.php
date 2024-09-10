@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Author;
 use App\Models\Project;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -16,6 +17,11 @@ class ProjectController extends Controller
         $project = Project::get();
         if ($project->count() > 0)
         {
+            
+             $project = Project::join('authors','projects.id','=','authors.project_id')
+            ->select('authors.group_name','projects.*')
+            ->get();
+
             return ProjectResource::collection($project);
         }
         else
@@ -29,23 +35,31 @@ class ProjectController extends Controller
         $validator = Validator::make($request->all(),[
             'title'=> 'required|string|max:255',
             'project_type'=> 'required|integer|max:11',
+            'privacy'=> 'required|integer',
             'year_published'=> 'required',
         ]);
         if ($validator->fails())
         {
             return response()->json([
                 'message'=>'ALL FIELDS ARE REQUIRED',
+                'quack'=> false,
                 'error'=>$validator->messages(),],422);
+                
         }
 
         $project = Project::create([
             'title'=> $request->title,
             'project_type'=> $request->project_type,
+            'privacy'=> $request->privacy,
             'year_published'=> $request->year_published,
         ]);
 
+        // $authorController = new AuthorController();
+        // return $authorController->store($request);
+
         return response()->json([
             'message'=> 'PROJECT ADDED',
+            'quack'=> true,
             'data'=> new ProjectResource($project)
         ],200);
     }

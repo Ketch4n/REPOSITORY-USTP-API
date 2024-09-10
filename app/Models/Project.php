@@ -14,6 +14,7 @@ class Project extends Model
     protected $fillable = [
         'title',
         'project_type',
+        'privacy',
         'year_published'
     ];
 }

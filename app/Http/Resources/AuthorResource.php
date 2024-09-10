@@ -20,10 +20,19 @@ class AuthorResource extends JsonResource
             'id'=> $this->id,
             'group_name'=> $this->group_name,
             'project_id'=> $this->project_id,
-            'member_0'=> $this->member_0,
-            'member_1'=> $this->member_1,
-            'member_2'=> $this->member_2,
-            'member_3'=> $this->member_3,
+            'title'=> $this->title,
+            'project_type'=> $this->project_type,
+            'year_published'=> $this->year_published,
+            'author' => [
+                $this->member_0,
+                $this->member_1,
+                $this->member_2,
+                $this->member_3,
+            ],
+            // 'member_0'=> $this->member_0,
+            // 'member_1'=> $this->member_1,
+            // 'member_2'=> $this->member_2,
+            // 'member_3'=> $this->member_3,
         ];
     }
 }

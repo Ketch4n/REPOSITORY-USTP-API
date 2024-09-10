@@ -20,6 +20,8 @@ class ProjectResource extends JsonResource
             'id'=> $this->id,
             'title'=> $this->title,
             'project_type'=> $this->project_type,
+            'privacy'=> $this->privacy,
+            'group_name'=> $this->group_name,
             'year_published'=> $this->year_published,
         ];
     }
