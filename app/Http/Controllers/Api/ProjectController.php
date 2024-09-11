@@ -37,6 +37,11 @@ class ProjectController extends Controller
             'project_type'=> 'required|integer|max:11',
             'privacy'=> 'required|integer',
             'year_published'=> 'required',
+            'group_name' => 'required|string',
+            'member_0'=> 'nullable|string',  
+            'member_1'=> 'nullable|string',  
+            'member_2'=> 'nullable|string',  
+            'member_3'=> 'nullable|string',  
         ]);
         if ($validator->fails())
         {
@@ -54,8 +59,14 @@ class ProjectController extends Controller
             'year_published'=> $request->year_published,
         ]);
 
-        // $authorController = new AuthorController();
-        // return $authorController->store($request);
+        $author = Author::create([
+            'project_id' => $project->id,
+            'group_name' => $request->group_name,
+            'member_0'=> $request->member_0,
+            'member_1'=> $request->member_1,
+            'member_2'=> $request->member_2,
+            'member_3'=> $request->member_3,
+        ]);
 
         return response()->json([
             'message'=> 'PROJECT ADDED',

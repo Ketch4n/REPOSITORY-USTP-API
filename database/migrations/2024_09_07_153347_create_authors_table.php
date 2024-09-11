@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('authors', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('project_id');
             $table->string('group_name');
-            $table->integer('project_id');
-            $table->string('member_0');
-            $table->string('member_1');
-            $table->string('member_2');
-            $table->string('member_3');
+            $table->string('member_0')->nullable();
+            $table->string('member_1')->nullable();
+            $table->string('member_2')->nullable();
+            $table->string('member_3')->nullable();
             $table->timestamps();
         });
     }
