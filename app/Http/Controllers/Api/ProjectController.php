@@ -52,7 +52,8 @@ class ProjectController extends Controller
             return response()->json([
                 'message'=>'ALL FIELDS ARE REQUIRED',
                 'quack'=> false,
-                'status'=>$validator->messages(),],422);
+                // 'status'=>$validator->messages(),
+            ],422);
                 
         }
 
@@ -63,7 +64,7 @@ class ProjectController extends Controller
             'year_published'=> $request->year_published,
         ]);
 
-        $author = Author::create([
+        Author::create([
             'project_id' => $project->id,
             'group_name' => $request->group_name,
             'member_0'=> $request->member_0,
@@ -75,7 +76,7 @@ class ProjectController extends Controller
         return response()->json([
             'message'=> 'PROJECT ADDED',
             'quack'=> true,
-            'data'=> new ProjectResource($project)
+            // 'data'=> new ProjectResource($project)
         ],200);
     }
 

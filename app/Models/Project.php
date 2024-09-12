@@ -15,6 +15,6 @@ class Project extends Model
         'title',
         'project_type',
         'privacy',
-        'year_published'
+        'year_published',
     ];
 }
