@@ -26,7 +26,11 @@ class ProjectController extends Controller
         }
         else
         {
-            return response()->json(['message'=>'NO PROJECT DATA'],200);
+            return response()->json([
+                'message' => 'NO PROJECT DATA',
+                'data' => [], 
+            ], 200);
+        
         }
     }
 
@@ -48,7 +52,7 @@ class ProjectController extends Controller
             return response()->json([
                 'message'=>'ALL FIELDS ARE REQUIRED',
                 'quack'=> false,
-                'error'=>$validator->messages(),],422);
+                'status'=>$validator->messages(),],422);
                 
         }
 
