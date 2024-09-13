@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\EmailController;
 use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\ProjectController;
 
@@ -23,4 +24,9 @@ Route::apiResource('author', AuthorController::class);
 Route::apiResource('user', UserController::class);
 Route::post('user/register', [UserController::class, 'register']);
 Route::post('user/login', [UserController::class, 'login']);
+
+# EMAIL CONTROLLER
+Route::post('sendmail', [EmailController::class, 'sendmail']);
+Route::post('sendmailTypeStatus', [EmailController::class, 'sendmailTypeStatus']);
+
 

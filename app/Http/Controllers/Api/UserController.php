@@ -10,43 +10,34 @@ use App\Http\Resources\UserResource;
 class UserController extends Controller
 {
 
-    public function index(Request $request)
-    {
-     
-    
-        $type = $request->query('type');
+   public function index(Request $request)
+{
+    // Retrieve the 'type' and 'status' query parameters from the request
+    $type = $request->query('type');
+    $status = $request->query('status');
 
- 
-        if ($type) {
-             $users = User::where('type', $type)->get();
-        } else {
+    // Start a query to filter users based on 'type' and 'status'
+    $query = User::query();
 
-        $users = User::all();
-        }
-
-        // return UserResource::collection($users);
-
-
-
-
-
-        // // $users = User::all();
-        
-        // $type = $request->query('type');
-
-        // $query = User::query();
-
-        // if ($type !== null) {
-        //     $query->where('type', $type);
-        // }
-
-        // $users = $query->get();
-
-        return response()->json([
-            'quack' => true,
-            'data' => $users,
-        ], 200);
+    // Apply filters if 'type' and 'status' are provided
+    if ($type) {
+        $query->where('type', $type);
     }
+
+    if ($status) {
+        $query->where('status', $status);
+    }
+
+    // Fetch the filtered users
+    $users = $query->get();
+
+    // Return a JSON response with the users data
+    return response()->json([
+        'quack' => true,
+        'data' => $users,
+    ], 200);
+}
+
 
 
     public function register(Request $request){
