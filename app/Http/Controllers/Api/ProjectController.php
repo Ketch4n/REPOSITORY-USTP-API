@@ -91,23 +91,28 @@ class ProjectController extends Controller
             'title'=> 'required|string|max:255',
             'project_type'=> 'required|integer|max:11',
             'year_published'=> 'required',
+            'privacy'=> 'required|integer'
         ]);
         if ($validator->fails())
         {
             return response()->json([
                 'message'=>'ALL FIELDS ARE REQUIRED',
-                'error'=>$validator->messages(),],422);
+                'quack'=> false,
+                // 'error'=>$validator->messages(),
+            ],422);
         }
 
         $project->update([
             'title'=> $request->title,
             'project_type'=> $request->project_type,
             'year_published'=> $request->year_published,
+            'privacy'=> $request->privacy,
         ]);
 
         return response()->json([
             'message'=> 'PROJECT UPDATED',
-            'data'=> new ProjectResource($project)
+            // 'data'=> new ProjectResource($project)
+            'quack'=> true,
         ],200);
     }
 
@@ -116,6 +121,7 @@ class ProjectController extends Controller
         $project->delete();
         return response()->json([
             'message'=> 'PROJECT DELETED',
+            'quack' => true,
         ],200);
     }
 }

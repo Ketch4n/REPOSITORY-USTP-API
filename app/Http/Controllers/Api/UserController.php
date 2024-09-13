@@ -5,9 +5,49 @@ namespace App\Http\Controllers\Api;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
+
+    public function index(Request $request)
+    {
+     
+    
+        $type = $request->query('type');
+
+ 
+        if ($type) {
+             $users = User::where('type', $type)->get();
+        } else {
+
+        $users = User::all();
+        }
+
+        // return UserResource::collection($users);
+
+
+
+
+
+        // // $users = User::all();
+        
+        // $type = $request->query('type');
+
+        // $query = User::query();
+
+        // if ($type !== null) {
+        //     $query->where('type', $type);
+        // }
+
+        // $users = $query->get();
+
+        return response()->json([
+            'quack' => true,
+            'data' => $users,
+        ], 200);
+    }
+
 
     public function register(Request $request){
 
@@ -62,4 +102,5 @@ class UserController extends Controller
             ], 401);
         }
     }
+
 }

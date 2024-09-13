@@ -67,4 +67,12 @@ class AuthorController extends Controller
         }
 
     }
+
+    public function destroy(Request $author){
+        $author->delete();
+        return response()->json([
+            'message'=> 'AUTHOR DELETED',
+            'quack' => true,
+        ],200);
+    }
 }

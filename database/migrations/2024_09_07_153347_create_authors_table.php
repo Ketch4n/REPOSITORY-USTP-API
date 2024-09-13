@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('authors', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('project_id');
+            $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->string('group_name');
             $table->string('member_0')->nullable();
             $table->string('member_1')->nullable();
