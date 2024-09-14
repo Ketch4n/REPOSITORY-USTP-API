@@ -35,18 +35,37 @@ class EmailController extends Controller
     }
 
     public function sendmailTypeStatus(){
-        $users = User::where('status', 'active')->get();
+        $users = User::where('type', 2)
+                     ->where('status', 1)
+                     ->get();
 
-         foreach ($users as $user) {
+        foreach ($users as $user) {
             $details = [
                 'email' => $user->email,
-                'name' => $user->name,
-                'message' => 'New Project Added, check it now !'
+                'username' => $user->username,
+                'message' => 'New Project Added, check it now!'
             ];
 
-            Mail::to($user->email)->send(new SendMail($details));
+        // Send email only to users who match both conditions
+        Mail::to($user->email)->send(new SendMail($details));
         }
 
         return response()->json(['message' => 'Emails sent successfully!']);
     }
+
+    // public function sendmailTypeStatus(){
+    //     $users = User::where('status', 'active')->get();
+
+    //      foreach ($users as $user) {
+    //         $details = [
+    //             'email' => $user->email,
+    //             'name' => $user->name,
+    //             'message' => 'New Project Added, check it now !'
+    //         ];
+
+    //         Mail::to($user->email)->send(new SendMail($details));
+    //     }
+
+    //     return response()->json(['message' => 'Emails sent successfully!']);
+    // }
 }

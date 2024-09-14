@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\EmailController;
 use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\FirebaseController;
+use App\Http\Controllers\Api\DatabaseBackupController;
 
 
 Route::get('/user', function (Request $request) {
@@ -24,9 +26,14 @@ Route::apiResource('author', AuthorController::class);
 Route::apiResource('user', UserController::class);
 Route::post('user/register', [UserController::class, 'register']);
 Route::post('user/login', [UserController::class, 'login']);
+Route::post('user/showStatus', [UserController::class, 'showStatus']);
+
 
 # EMAIL CONTROLLER
 Route::post('sendmail', [EmailController::class, 'sendmail']);
 Route::post('sendmailTypeStatus', [EmailController::class, 'sendmailTypeStatus']);
 
-
+# DATABASE BACKUP CONTROLLER
+// Route::middleware('auth:api')->post('/backup-database', [DatabaseBackupController::class, 'backupDatabaseToFirebase']);
+Route::post('/backup-database', [DatabaseBackupController::class, 'backupDatabaseToFirebase']);
+// Route::post('/firebase-upload', [FirebaseController::class, 'uploadFile']);

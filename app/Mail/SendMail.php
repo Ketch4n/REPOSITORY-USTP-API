@@ -49,7 +49,7 @@ class SendMail extends Mailable
         return "
             <html>
             <body>
-                <h1>Hello, {$this->details['name']}</h1>
+                <h1>Hello, {$this->details['username']}</h1>
                 <p>{$this->details['message']}</p>
                 <p>Thank you!</p>
             </body>
