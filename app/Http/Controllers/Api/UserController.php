@@ -70,11 +70,10 @@ class UserController extends Controller
     public function register(Request $request){
 
         $userDetails = $request->validate([
-            'username'=> ['required','string','max:255'],
-            'email'=> ['required','email','unique:users,email'],
-            'type'=> ['required','integer'],
-            'status'=> ['required,integer'],
-            'password'=> ['required','string','max:255']
+            'username'=> 'required|string|max:255',
+            'email'=> 'required|email|unique:users,email',
+            'type'=> 'required|integer',
+            'password'=> 'required|string|max:255'
         ]);
 
         $userDetails['password'] = bcrypt($userDetails['password']);
