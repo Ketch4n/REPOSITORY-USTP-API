@@ -53,6 +53,8 @@ class DatabaseBackupController extends Controller
 
         fclose($handle);
         $mysqli->close();
+        
+        chmod($backupFilePath, 0777);
 
         // Check if the backup file was created
         if (!file_exists($backupFilePath)) {

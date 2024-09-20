@@ -1,0 +1,11 @@
+[
+    {
+        "origin": [
+            "https://ketchan-tech.online/api/backup-database/"
+        ],
+        "method": [
+            "GET, POST"
+        ],
+        "maxAgeSeconds": 3600
+    }
+]
