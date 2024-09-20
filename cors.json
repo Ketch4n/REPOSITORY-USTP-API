@@ -1,0 +1,11 @@
+[
+    {
+        "origin": [
+            "https://ketchan-tech.online/api/"
+        ],
+        "method": [
+            "GET, POST"
+        ],
+        "maxAgeSeconds": 3600
+    }
+]
