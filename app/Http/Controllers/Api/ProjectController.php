@@ -39,7 +39,7 @@ class ProjectController extends Controller
         $validator = Validator::make($request->all(),[
             'title'=> 'required|string|max:255',
             'project_type'=> 'required|integer|max:11',
-            'privacy'=> 'required|integer',
+          
             'year_published'=> 'required',
             'group_name' => 'required|string',
             'member_0'=> 'nullable|string',  
@@ -60,7 +60,7 @@ class ProjectController extends Controller
         $project = Project::create([
             'title'=> $request->title,
             'project_type'=> $request->project_type,
-            'privacy'=> $request->privacy,
+          
             'year_published'=> $request->year_published,
         ]);
 
@@ -91,7 +91,7 @@ class ProjectController extends Controller
             'title'=> 'required|string|max:255',
             'project_type'=> 'required|integer|max:11',
             'year_published'=> 'required',
-            'privacy'=> 'required|integer'
+          
         ]);
         if ($validator->fails())
         {
@@ -106,7 +106,7 @@ class ProjectController extends Controller
             'title'=> $request->title,
             'project_type'=> $request->project_type,
             'year_published'=> $request->year_published,
-            'privacy'=> $request->privacy,
+           
         ]);
 
         return response()->json([
