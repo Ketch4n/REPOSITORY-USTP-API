@@ -76,7 +76,7 @@ class ProjectController extends Controller
         return response()->json([
             'message'=> 'PROJECT ADDED',
             'quack'=> true,
-            // 'data'=> new ProjectResource($project)
+            'data'=> new ProjectResource($project)
         ],200);
     }
 
