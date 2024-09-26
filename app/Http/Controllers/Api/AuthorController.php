@@ -67,7 +67,52 @@ class AuthorController extends Controller
         }
 
     }
+    public function update(Request $request, Author $author)
+    {
 
+        $validator = Validator::make($request->all(),[
+
+            'group_name'=> 'required|string|max:255',
+            'project_id'=> 'required|integer',
+            'member_0' => 'nullable|string|max:255',
+            'member_1' => 'nullable|string|max:255',
+            'member_2' => 'nullable|string|max:255',
+            'member_3' => 'nullable|string|max:255',
+                
+            ]);
+
+        if ($validator->fails())
+        {
+            return response()->json([
+                'message'=>'ALL FIELDS ARE REQUIRED',
+                'error'=>$validator->messages(),],422);
+        }
+
+        try 
+        {
+            $author->update([
+            'group_name'=> $request->group_name,
+            'project_id'=> $request->project_id,
+            'member_0'=> $request->member_0,
+            'member_1'=> $request->member_1,
+            'member_2'=> $request->member_2,
+            'member_3'=> $request->member_3,
+            ]);
+        
+            return response()->json([
+                'message'=> 'AUTHOR UPDATED',
+                'data'=> new AuthorResource($author)
+            ], 200);
+        }
+        
+        catch (\Exception $e) {
+             return response()->json([
+                'message' => 'An error occurred',
+                'error' => $e->getMessage()
+            ], 500); 
+        }
+
+    }
     public function destroy(Request $author){
         $author->delete();
         return response()->json([

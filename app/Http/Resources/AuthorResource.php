@@ -23,7 +23,7 @@ class AuthorResource extends JsonResource
             'title'=> $this->title,
             'project_type'=> $this->project_type,
             'year_published'=> $this->year_published,
-            'author' => [
+            'authors' => [
                 $this->member_0,
                 $this->member_1,
                 $this->member_2,
