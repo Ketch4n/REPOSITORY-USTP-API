@@ -43,3 +43,4 @@ Route::post('/backup-database', [DatabaseBackupController::class, 'backupDatabas
 # VIEWED CONTROLLER
 Route::apiResource('viewed', ViewedController::class);
 Route::post('downloads', [ViewedController::class, 'getDownloadsByProjectId']);
+Route::post('countDownloads',[ViewedController::class,'countDownloads']);
