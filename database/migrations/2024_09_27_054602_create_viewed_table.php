@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('projects', function (Blueprint $table) {
-            $table->integer('privacy');
+        Schema::create('viewed', function (Blueprint $table) {
+            $table->id();
+            $table->integer('project_id');
+            $table->integer('user_id');
+            $table->string('file_name');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('projects', function (Blueprint $table) {
-             $table->dropColumn('privacy');
-        });
+        Schema::dropIfExists('viewed');
     }
 };

@@ -51,7 +51,25 @@ class SendMail extends Mailable
             <body>
                 <h1>Hello, {$this->details['username']}</h1>
                 <p>{$this->details['message']}</p>
-                <p>Thank you!</p>
+                <p>Check out the project at this link: <a href='{$this->details['link']}'>{$this->details['link']}</a></p>
+                <table border='1' cellpadding='5' cellspacing='0' style='border-collapse: collapse; width: 100%;'>
+                    <thead>
+                        <tr>
+                            <th>Project Title</th>
+                            <th>Project Type</th>
+                            <th>Year Published</th>
+                        </tr>
+                        
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{$this->details['title']}</td>
+                            <td>{$this->details['type']}</td>
+                            <td>{$this->details['year']}</td>
+                        </tr>
+                    
+                    </tbody>
+                </table>
             </body>
             </html>
         ";

@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\FirebaseController;
 use App\Http\Controllers\Api\DatabaseBackupController;
+use App\Http\Controllers\Api\ViewedController;
+
 
 
 Route::get('/user', function (Request $request) {
@@ -37,3 +39,8 @@ Route::post('sendmailTypeStatus', [EmailController::class, 'sendmailTypeStatus']
 // Route::middleware('auth:api')->post('/backup-database', [DatabaseBackupController::class, 'backupDatabaseToFirebase']);
 Route::post('/backup-database', [DatabaseBackupController::class, 'backupDatabaseToFirebase']);
 // Route::post('/firebase-upload', [FirebaseController::class, 'uploadFile']);
+
+# VIEWED CONTROLLER
+Route::apiResource('viewed', ViewedController::class);
+Route::post('downloads', [ViewedController::class, 'getDownloadsByProjectId']);
+Route::post('countDownloads',[ViewedController::class,'countDownloads']);

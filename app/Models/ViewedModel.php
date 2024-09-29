@@ -5,16 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Project extends Model
+class ViewedModel extends Model
 {
     use HasFactory;
 
-    protected $table = 'projects';
+    protected $table = 'viewed';
 
     protected $fillable = [
-        'title',
-        'project_type',
-     
-        'year_published',
+        'project_id',
+        'user_id',
+        'file_name',
     ];
 }

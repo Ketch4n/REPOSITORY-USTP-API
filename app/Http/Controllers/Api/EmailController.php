@@ -34,17 +34,16 @@ class EmailController extends Controller
         return response()->json(['message' => 'Email sent successfully!']);
     }
 
-    public function sendmailTypeStatus(){
-        $users = User::where('type', 2)
-                     ->where('status', 1)
+    public function sendmailTypeStatus(Request $request){
+        $users = User::where('status', 1)
                      ->get();
 
         foreach ($users as $user) {
-            $details = [
+            $details = array_merge($request->all(),[
                 'email' => $user->email,
                 'username' => $user->username,
                 'message' => 'New Project Added, check it now!'
-            ];
+            ]);
 
         // Send email only to users who match both conditions
         Mail::to($user->email)->send(new SendMail($details));
