@@ -6,10 +6,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\EmailController;
 use App\Http\Controllers\Api\AuthorController;
+use App\Http\Controllers\Api\ViewedController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\FirebaseController;
+use App\Http\Controllers\Api\LikeCommentController;
 use App\Http\Controllers\Api\DatabaseBackupController;
-use App\Http\Controllers\Api\ViewedController;
 
 
 
@@ -30,7 +31,6 @@ Route::post('user/register', [UserController::class, 'register']);
 Route::post('user/login', [UserController::class, 'login']);
 Route::post('user/showStatus', [UserController::class, 'showStatus']);
 
-
 # EMAIL CONTROLLER
 Route::post('sendmail', [EmailController::class, 'sendmail']);
 Route::post('sendmailTypeStatus', [EmailController::class, 'sendmailTypeStatus']);
@@ -44,3 +44,6 @@ Route::post('/backup-database', [DatabaseBackupController::class, 'backupDatabas
 Route::apiResource('viewed', ViewedController::class);
 Route::post('downloads', [ViewedController::class, 'getDownloadsByProjectId']);
 Route::post('countDownloads',[ViewedController::class,'countDownloads']);
+
+# LIKE AND COMMENT CONTROLLER
+Route::apiResource('likecomment', LikeCommentController::class);
