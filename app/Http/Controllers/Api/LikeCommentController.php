@@ -12,8 +12,23 @@ class LikeCommentController extends Controller
 {
     public function index()
     {
-        $comment = LikeCommentModel::all(); 
-        return new LikeCommentResource($comment);
+        $comment = LikeCommentModel::join('users', 'like_comment.user_id', '=', 'users.id')
+            ->select([
+                'like_comment.*',
+                'users.username',
+                'users.email', 
+            ])
+            ->get();
+
+        if ($comment->isNotEmpty()) {
+            return LikeCommentResource::collection($comment);
+        } else {
+            return response()->json([
+                'message' => 'NO DATA',
+                'data' => [], 
+            ], 200);
+        }
+
     }
 
 
