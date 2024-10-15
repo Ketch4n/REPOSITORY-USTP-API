@@ -10,22 +10,26 @@ use App\Http\Resources\LikeCommentResource;
 
 class LikeCommentController extends Controller
 {
-    public function index()
+    public function projectRatingComment(Request $request)
     {
-        $comment = LikeCommentModel::join('users', 'like_comment.user_id', '=', 'users.id')
+        $projectId = $request->input('project_id');
+    
+        $comments = LikeCommentModel::join('users', 'like_comment.user_id', '=', 'users.id')
+            ->join('projects', 'like_comment.project_id', '=', 'projects.id')
+            ->where('like_comment.project_id', $projectId) 
             ->select([
                 'like_comment.*',
                 'users.username',
-                'users.email', 
+                'users.email',
             ])
             ->get();
-
-        if ($comment->isNotEmpty()) {
-            return LikeCommentResource::collection($comment);
+    
+        if ($comments->isNotEmpty()) {
+            return LikeCommentResource::collection($comments);
         } else {
             return response()->json([
                 'message' => 'NO DATA',
-                'data' => [], 
+                'data' => [],
             ], 200);
         }
 

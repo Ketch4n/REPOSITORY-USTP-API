@@ -47,3 +47,5 @@ Route::post('countDownloads',[ViewedController::class,'countDownloads']);
 
 # LIKE AND COMMENT CONTROLLER
 Route::apiResource('likecomment', LikeCommentController::class);
+Route::post('likecomment/rating',[LikeCommentController::class,'projectRatingComment']);
+
