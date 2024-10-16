@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->integer('project_id');
             $table->integer('user_id');
-            $table->integer('rating')->nullable()->default(0);
-            $table->text('comment')->nullable();
+            $table->integer('rating');
+            $table->text('comment');
             $table->timestamps();
         });
     }

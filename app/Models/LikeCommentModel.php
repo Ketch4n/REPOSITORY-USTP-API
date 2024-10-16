@@ -12,9 +12,10 @@ class LikeCommentModel extends Model
     protected $table = 'like_comment';
 
     protected $fillable = [
+       
+        'rating',
+        'comment',
         'user_id',
         'project_id',
-        'rating',
-        'comment'
     ];
 }

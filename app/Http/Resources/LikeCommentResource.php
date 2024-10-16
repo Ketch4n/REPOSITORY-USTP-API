@@ -14,6 +14,17 @@ class LikeCommentResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        // return parent::toArray($request);
+        return [
+            'id'=> $this->id,
+            'rating'=> $this->rating,
+            'project_id'=> $this->project_id,
+            'user_id'=> $this->user_id,
+            'comment'=> $this->comment,
+            'username'=> $this->username,
+            'email'=> $this->email,
+            'created_at'=> $this->created_at
+           
+        ];
     }
 }

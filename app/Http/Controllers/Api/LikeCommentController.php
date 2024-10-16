@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
 use App\Models\LikeCommentModel;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\LikeCommentResource;
 use App\Http\Controllers\Api\LikeCommentController;
@@ -88,40 +88,51 @@ class LikeCommentController extends Controller
         return new LikeCommentResource($comment);
     }
     
-    public function update(Request $request, LikeCommentModel $comment)
+    public function updateRatingComment(Request $request, $id)
     {
-    
-        $validator = Validator::make($request->all(),[
-            'rating'=> 'nullable',
-            'comment'=> 'nullable',
-        
-        ]);
-        if ($validator->fails())
-        {
+        // Find the comment by ID
+        $comment = LikeCommentModel::find($id);
+
+        if (!$comment) {
             return response()->json([
-                'message'=>'ALL FIELDS ARE REQUIRED',
-                'quack'=> false,
-                // 'status'=>$validator->messages(),
-            ],422);
-                
+                'quack' => false,
+                'message' => 'Comment not found',
+            ], 404);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'rating' => 'required',
+            'comment' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'ALL FIELDS ARE REQUIRED',
+                'quack' => false,
+            ], 422);
         }
 
         try {
-            $comment->update($ratingcomment);
+            $comment->update([
+                'rating' => $request->rating,
+                'comment' => $request->comment,
+            ]);
+            $comment->refresh();
             return response()->json([
-                'quack'=> true,
+                'quack' => true,
                 'message' => 'Updated successfully',
-                'data' => $comment
+                'data' => $comment,
             ], 200);
-
         } catch (\Exception $e) {
+            \Log::error('Update failed: ' . $e->getMessage());
             return response()->json([
-                'quack'=> false,
+                'quack' => false,
                 'message' => 'Update failed',
-                'data' => $e->getMessage()
+                'data' => $e->getMessage(),
             ], 500);
-        } 
+        }
     }
+
     
 
     public function destroy($id) {
