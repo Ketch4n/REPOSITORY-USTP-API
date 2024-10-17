@@ -23,9 +23,9 @@ class ViewedController extends Controller
     public function store(Request $request){
         
         $validator = Validator::make($request->all(),[
-            'project_id'=>'required|integer|max:11',
-            'user_id'=> 'required|integer|max:11',
-            'file_name'=> 'required|string|max:255',
+            "project_id"=>'required',
+            "user_id"=> 'required',
+            "file_name"=> 'required'
         ]);
 
         if($validator->fails())
