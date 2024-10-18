@@ -17,24 +17,27 @@ class SendMail extends Mailable
 
     /**
      * Create a new message instance.
+     *
+     * @param array $details
      */
-    public function __construct($details)
+    public function __construct(array $details)
     {
         $this->details = $details;
     }
 
-    // public function build()
-    // {
-    //     return $this->subject('Test Email from Laravel')
-    //                 ->from('ustp.repository@gmail.com', 'USTP Repository')
-    //                 ->to($this->details['email'])
-    //                 ->html($this->buildEmailContent()); // Use the email content method
-    // }
+    /**
+     * Build the message.
+     *
+     * @return $this
+     */
     public function build()
     {
         return $this->from('ustp.repository@gmail.com', 'USTP Repository')
+                    ->to($this->details['email']) // Ensure you set the recipient email here
+                    ->subject('New Project Added') // Set subject here for clarity
                     ->html($this->buildEmailContent());
     }
+
     /**
      * Get the message envelope.
      */
@@ -44,7 +47,13 @@ class SendMail extends Mailable
             subject: 'New Project Added',
         );
     }
-    private function buildEmailContent()
+
+    /**
+     * Build the HTML content for the email.
+     *
+     * @return string
+     */
+    private function buildEmailContent(): string
     {
         return "
             <html>
@@ -59,7 +68,6 @@ class SendMail extends Mailable
                             <th>Project Type</th>
                             <th>Year Published</th>
                         </tr>
-                        
                     </thead>
                     <tbody>
                         <tr>
@@ -67,7 +75,6 @@ class SendMail extends Mailable
                             <td>{$this->details['type']}</td>
                             <td>{$this->details['year']}</td>
                         </tr>
-                    
                     </tbody>
                 </table>
             </body>
@@ -77,11 +84,13 @@ class SendMail extends Mailable
 
     /**
      * Get the message content definition.
+     *
+     * @return Content
      */
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'view.name', // Consider if you need this since you are using html() above
         );
     }
 
@@ -92,6 +101,6 @@ class SendMail extends Mailable
      */
     public function attachments(): array
     {
-        return [];
+        return []; // Add any attachments if necessary
     }
 }
