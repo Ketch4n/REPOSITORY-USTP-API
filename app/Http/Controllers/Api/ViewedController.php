@@ -17,9 +17,7 @@ class ViewedController extends Controller
 
         return new ViewedResource($viewed);
     }
-    public function show(ViewedModel $viewed){
-        
-    }
+
     public function store(Request $request){
         
         $validator = Validator::make($request->all(),[

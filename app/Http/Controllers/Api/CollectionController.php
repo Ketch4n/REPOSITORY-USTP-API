@@ -9,12 +9,7 @@ use App\Http\Resources\CollectionResource;
 
 class CollectionController extends Controller
 {
-    public function index(){
 
-    }
-    public function show(){
-
-    }
     public function store(Request $request){
         
         $validator = Validator::make($request->all(),[
@@ -47,11 +42,6 @@ class CollectionController extends Controller
             'data'=> new CollectionResource($collection)
         ],200);
     }
-    public function update(){
 
-    }
-    public function destroy(){
-
-    }
     
 }
