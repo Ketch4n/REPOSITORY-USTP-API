@@ -3,6 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+use App\Notifications\SmsNotification;
+use App\Http\Controllers\Api\SmsController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\EmailController;
 use App\Http\Controllers\Api\AuthorController;
@@ -49,5 +51,11 @@ Route::post('countDownloads',[ViewedController::class,'countDownloads']);
 Route::apiResource('likecomment', LikeCommentController::class);
 Route::post('likecomment/rating',[LikeCommentController::class,'projectRatingComment']);
 Route::post('likecomment/{id}/update',[LikeCommentController::class,'updateRatingComment']);
+
+# SMS TWILIO
+Route::post('sendsms',[SmsController::class,'sendSms']);
+
+
+
 
 
