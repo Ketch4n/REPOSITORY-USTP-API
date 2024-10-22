@@ -28,6 +28,8 @@ class ProjectController extends Controller
                 'collection.manuscript', 
                 'collection.poster', 
                 'collection.video',
+                'collection.zip',
+
               
             ])
             ->get();
@@ -83,6 +85,7 @@ class ProjectController extends Controller
             'manuscript'=> $request->manuscript,
             'poster'=> $request->poster,
             'video'=> $request->video,
+            'zip'=> $request->zip,
         ]);
 
         return response()->json([

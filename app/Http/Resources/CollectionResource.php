@@ -21,7 +21,9 @@ class CollectionResource extends JsonResource
             'project_id'=> $this->project_id,
             'manuscript'=> $this->manuscript,
             'poster'=> $this->poster,
-            'video'=> $this->video
+            'video'=> $this->video,
+            'zip'=> $this->zip
+
         ];
     }
 }

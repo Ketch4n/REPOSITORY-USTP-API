@@ -17,6 +17,8 @@ class CollectionController extends Controller
             'manuscript' => 'nullable|string|max:255',
             'poster' => 'nullable|string|max:255',
             'video' => 'nullable|string|max:255',
+            'zip' => 'nullable|string|max:255',
+
         ]);
 
         if ($validator->fails())
@@ -34,6 +36,8 @@ class CollectionController extends Controller
             'manuscript'=> $request->manuscript,
             'poster'=> $request->poster,
             'video'=> $request->video,
+            'zip'=> $request->zip,
+
         ]);
 
         return response()->json([
