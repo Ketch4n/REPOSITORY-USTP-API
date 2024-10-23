@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->integer('project_type');
             $table->year('year_published');
+            $table->integer('semester');
             $table->timestamps();
         });
     }

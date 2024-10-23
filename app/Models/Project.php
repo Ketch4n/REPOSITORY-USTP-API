@@ -15,5 +15,6 @@ class Project extends Model
         'title',
         'project_type',
         'year_published',
+        'semester',
     ];
 }
