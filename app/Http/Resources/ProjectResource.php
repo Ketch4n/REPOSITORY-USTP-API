@@ -22,9 +22,11 @@ class ProjectResource extends JsonResource
             'project_type'=> $this->project_type,
             'group_name'=> $this->group_name,   
             'year_published'=> $this->year_published,
+            'semester'=> $this->semester,
             'manuscript'=> $this->manuscript,
             'poster'=> $this->poster,
             'video'=> $this->video,
+            'zip'=> $this->zip,
             'authors' => [
                 $this->member_0,
                 $this->member_1,

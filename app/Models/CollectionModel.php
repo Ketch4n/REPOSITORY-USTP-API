@@ -15,6 +15,7 @@ class CollectionModel extends Model
         'project_id',
         'manuscript',
         'poster',
-        'video'
+        'video',
+        'zip',
     ];
 }

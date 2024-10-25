@@ -28,6 +28,8 @@ class ProjectController extends Controller
                 'collection.manuscript', 
                 'collection.poster', 
                 'collection.video',
+                'collection.zip',
+
               
             ])
             ->get();
@@ -49,6 +51,7 @@ class ProjectController extends Controller
             'title'=> 'required|string|max:255',
             'project_type'=> 'required|integer|max:11',
             'year_published'=> 'required',
+            'semester'=> 'required|integer|max:11',
             'group_name' => 'required|string'
            
         ]);
@@ -67,6 +70,7 @@ class ProjectController extends Controller
             'title'=> $request->title,
             'project_type'=> $request->project_type, 
             'year_published'=> $request->year_published,
+            'semester'=> $request->semester,
         ]);
 
         Author::create([
@@ -83,6 +87,7 @@ class ProjectController extends Controller
             'manuscript'=> $request->manuscript,
             'poster'=> $request->poster,
             'video'=> $request->video,
+            'zip'=> $request->zip,
         ]);
 
         return response()->json([

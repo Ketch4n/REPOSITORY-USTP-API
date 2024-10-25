@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('manuscript')->nullable();
             $table->string('poster')->nullable();
             $table->string('video')->nullable();
+            $table->string('zip')->nullable();
             $table->timestamps();
         });
     }
