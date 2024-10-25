@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\ViewedController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\FirebaseController;
+use App\Http\Controllers\api\CollectionController;
 use App\Http\Controllers\Api\LikeCommentController;
 use App\Http\Controllers\Api\DatabaseBackupController;
 
@@ -32,6 +33,11 @@ Route::apiResource('user', UserController::class);
 Route::post('user/register', [UserController::class, 'register']);
 Route::post('user/login', [UserController::class, 'login']);
 Route::post('user/showStatus', [UserController::class, 'showStatus']);
+
+# COLLECTION CONTROLLER
+Route::apiResource('collection', CollectionController::class);
+Route::post('collection-null/{id}/update', [CollectionController::class, 'updateFileNULL']);
+
 
 # EMAIL CONTROLLER
 Route::post('sendmail', [EmailController::class, 'sendmail']);
