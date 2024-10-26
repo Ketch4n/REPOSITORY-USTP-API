@@ -9,10 +9,12 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\EmailController;
 use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\ViewedController;
+use App\Http\Controllers\Api\VonageController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\FirebaseController;
 use App\Http\Controllers\api\CollectionController;
 use App\Http\Controllers\Api\LikeCommentController;
+use App\Http\Controllers\Api\ResetPasswordController;
 use App\Http\Controllers\Api\DatabaseBackupController;
 
 
@@ -45,7 +47,9 @@ Route::post('sendmailTypeStatus', [EmailController::class, 'sendmailTypeStatus']
 
 # DATABASE BACKUP CONTROLLER
 // Route::middleware('auth:api')->post('/backup-database', [DatabaseBackupController::class, 'backupDatabaseToFirebase']);
-Route::post('/backup-database', [DatabaseBackupController::class, 'backupDatabaseToFirebase']);
+Route::post('/backup-database', [DatabaseBackupController::class, 'backupDatabase']);
+Route::get('/list-backups', [DatabaseBackupController::class, 'listBackups']);
+
 // Route::post('/firebase-upload', [FirebaseController::class, 'uploadFile']);
 
 # VIEWED CONTROLLER
@@ -60,6 +64,13 @@ Route::post('likecomment/{id}/update',[LikeCommentController::class,'updateRatin
 
 # SMS TWILIO
 Route::post('sendsms',[SmsController::class,'sendSms']);
+# SMS VONAGE
+Route::post('vonage',[VonageController::class,'sendSMS']);
+Route::post('vonage-reset',[VonageController::class,'sendPasswordResetToken']);
+
+# PASSWORD RESET
+Route::post('password-request', [ResetPasswordController::class, 'requestPasswordReset']);
+Route::post('password-reset', [ResetPasswordController::class, 'resetPassword']);
 
 
 
