@@ -71,7 +71,7 @@ Route::post('sendsms',[SmsController::class,'sendSms']);
 Route::post('vonage',[VonageController::class,'sendSMS']);
 Route::post('vonage-reset',[VonageController::class,'sendPasswordResetToken']);
 # SMS CHEF
-Route::get('/send-sms', [SmsChefController::class, 'sendSms']);
+Route::post('send-sms', [SmsChefController::class, 'sendSms']);
 
 # PASSWORD RESET
 Route::post('password-request', [ResetPasswordController::class, 'requestPasswordReset']);
