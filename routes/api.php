@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Notifications\SmsNotification;
 use App\Http\Controllers\Api\SmsController;
+use App\Http\Controllers\SmsChefController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\EmailController;
 use App\Http\Controllers\Api\AuthorController;
@@ -70,7 +71,7 @@ Route::post('sendsms',[SmsController::class,'sendSms']);
 Route::post('vonage',[VonageController::class,'sendSMS']);
 Route::post('vonage-reset',[VonageController::class,'sendPasswordResetToken']);
 # SMS CHEF
-Route::get('/send-sms', [SmsController::class, 'sendSms']);
+Route::get('/send-sms', [SmsChefController::class, 'sendSms']);
 
 # PASSWORD RESET
 Route::post('password-request', [ResetPasswordController::class, 'requestPasswordReset']);
