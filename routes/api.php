@@ -5,13 +5,13 @@ use Illuminate\Support\Facades\Route;
 
 use App\Notifications\SmsNotification;
 use App\Http\Controllers\Api\SmsController;
-use App\Http\Controllers\SmsChefController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\EmailController;
 use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\ViewedController;
 use App\Http\Controllers\Api\VonageController;
 use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\SmsChefController;
 use App\Http\Controllers\Api\FirebaseController;
 use App\Http\Controllers\api\CollectionController;
 use App\Http\Controllers\Api\LikeCommentController;
@@ -71,7 +71,9 @@ Route::post('sendsms',[SmsController::class,'sendSms']);
 Route::post('vonage',[VonageController::class,'sendSMS']);
 Route::post('vonage-reset',[VonageController::class,'sendPasswordResetToken']);
 # SMS CHEF
-Route::post('send-sms', [SmsChefController::class, 'sendSms']);
+Route::post('send-sms', [SmsController::class, 'sendSms']);
+
+
 
 # PASSWORD RESET
 Route::post('password-request', [ResetPasswordController::class, 'requestPasswordReset']);
