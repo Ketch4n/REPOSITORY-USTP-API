@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\ViewedController;
 use App\Http\Controllers\Api\VonageController;
 use App\Http\Controllers\Api\ProjectController;
+use App\Http\Controllers\Api\SmsChefController;
 use App\Http\Controllers\Api\FirebaseController;
 use App\Http\Controllers\api\CollectionController;
 use App\Http\Controllers\Api\LikeCommentController;
@@ -49,6 +50,8 @@ Route::post('sendmailTypeStatus', [EmailController::class, 'sendmailTypeStatus']
 // Route::middleware('auth:api')->post('/backup-database', [DatabaseBackupController::class, 'backupDatabaseToFirebase']);
 Route::post('/backup-database', [DatabaseBackupController::class, 'backupDatabase']);
 Route::get('/list-backups', [DatabaseBackupController::class, 'listBackups']);
+Route::delete('/delete-backup/{fileName}', [DatabaseBackupController::class, 'deleteBackup']);
+Route::post('/restore-backup/{fileName}', [DatabaseBackupController::class, 'restoreBackup']);
 
 // Route::post('/firebase-upload', [FirebaseController::class, 'uploadFile']);
 
@@ -67,6 +70,10 @@ Route::post('sendsms',[SmsController::class,'sendSms']);
 # SMS VONAGE
 Route::post('vonage',[VonageController::class,'sendSMS']);
 Route::post('vonage-reset',[VonageController::class,'sendPasswordResetToken']);
+# SMS CHEF
+Route::post('send-sms', [SmsController::class, 'sendSms']);
+
+
 
 # PASSWORD RESET
 Route::post('password-request', [ResetPasswordController::class, 'requestPasswordReset']);
