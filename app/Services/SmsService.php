@@ -6,18 +6,18 @@ use Illuminate\Support\Facades\Http;
 
 class SmsService
 {
-    private $apiUrl = "https://www.cloud.smschef.com/api/send/sms";
+    private $apiUrl = "https://www.cloud.smschef.com/api/send/sms.bulk";
 
-
-    public function sendSms( $phone, $message, $sim = 1, $priority = 1)
+    public function sendSms($phone, $message, $sim = 1, $priority = 1)
     {
         $payload = [
             "secret" => env('SMSCHEF_API_SECRET'),
             "mode" => "devices",
+            "campaign"=> "bulk test",
             "device" => env('SMSCHEF_DEVICE_ID'),
             "sim" => $sim,
             "priority" => $priority,
-            "phone" => $phone,
+            "numbers" => $phone,
             "message" => $message,
         ];
 

@@ -73,7 +73,8 @@ class UserController extends Controller
             'username'=> 'required|string|max:255',
             'email'=> 'required|email|unique:users,email',
             'type'=> 'required|integer',
-            'password'=> 'required|string|max:255'
+            'password'=> 'required|string|max:255',
+            'phone'=> 'required|string'
         ]);
 
         $userDetails['password'] = bcrypt($userDetails['password']);

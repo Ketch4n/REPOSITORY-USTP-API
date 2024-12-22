@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
-
 use App\Services\SmsService;
+use App\Models\User; // Add this line to import the User model
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
 
 class SmsController extends Controller
 {
@@ -17,18 +16,31 @@ class SmsController extends Controller
         $this->smsService = $smsService;
     }
 
-    public function sendSms(Request $request)
+    public function sendBulkSms(Request $request)
     {
         $request->validate([
-            'phone' => 'required|string',
             'message' => 'required|string',
         ]);
 
-        $response = $this->smsService->sendSms(
-            $request->phone,
-            $request->message
-        );
+        // Retrieve active users with phone numbers
+        $users = User::where('status', 1)->whereNotNull('phone')->get();
 
-        return response()->json($response);
+        $responses = [];
+        
+        // Loop through each user and send SMS
+        foreach ($users as $user) {
+            $response = $this->smsService->sendSms(
+                $user->phone,
+                $request->message
+            );
+            $responses[] = [
+                'user_id' => $user->id,
+                'phone' => $user->phone,
+                'response' => $response
+            ];
+        }
+
+        // Return responses for each sent SMS
+        return response()->json($responses);
     }
 }
