@@ -9,7 +9,6 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\EmailController;
 use App\Http\Controllers\Api\AuthorController;
 use App\Http\Controllers\Api\ViewedController;
-use App\Http\Controllers\Api\VonageController;
 use App\Http\Controllers\Api\ProjectController;
 use App\Http\Controllers\Api\SmsChefController;
 use App\Http\Controllers\Api\FirebaseController;
@@ -65,11 +64,6 @@ Route::apiResource('likecomment', LikeCommentController::class);
 Route::post('likecomment/rating',[LikeCommentController::class,'projectRatingComment']);
 Route::post('likecomment/{id}/update',[LikeCommentController::class,'updateRatingComment']);
 
-# SMS TWILIO
-Route::post('sendsms',[SmsController::class,'sendSms']);
-# SMS VONAGE
-Route::post('vonage',[VonageController::class,'sendSMS']);
-Route::post('vonage-reset',[VonageController::class,'sendPasswordResetToken']);
 # SMS CHEF
 Route::post('send-sms', [SmsController::class, 'sendBulkSms']);
 
