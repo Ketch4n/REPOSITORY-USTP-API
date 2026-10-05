@@ -1,0 +1,11 @@
+.git
+.github
+.env
+.env.*
+!.env.example
+auth.json
+vendor
+node_modules
+public/build
+storage/logs/*
+firebase/firebase-service-account.json

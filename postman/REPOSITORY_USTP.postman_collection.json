@@ -1,0 +1,1154 @@
+{
+  "info": {
+    "_postman_id": "9fd90abd-c8f6-420a-bca7-d2773b0880bb",
+    "name": "REPOSITORY_USTP",
+    "description": "API collection for REPOSITORY-USTP-API.\n\nSetup\n1. Select the `REPOSITORY_USTP Local` environment (REPOSITORY_USTP.postman_environment.json).\n2. Start the stack: `docker compose up -d db` then `php artisan serve`.\n3. Run `USER / LOGIN` once. Its post-response script stores `token` in the environment, and every other request inherits Bearer auth from this collection.\n\nConventions\n- Host is always `{{baseUrl}}`, never a hardcoded 127.0.0.1.\n- Every request sends `Accept: application/json` so Laravel returns JSON errors instead of a full HTML debug page.\n- Requests marked NOT IMPLEMENTED have no matching route in routes/api.php yet.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "36723805",
+    "_collection_link": "https://go.postman.co/collection/36723805-9fd90abd-c8f6-420a-bca7-d2773b0880bb?source=collection_link"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "if (!pm.environment.name) {",
+          "    console.warn('No environment selected. {{baseUrl}} and {{token}} will not resolve.');",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://127.0.0.1:8000",
+      "type": "string",
+      "description": "Fallback only. The selected environment should override this."
+    },
+    {
+      "key": "userId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "projectId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "authorId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "USER",
+      "item": [
+        {
+          "name": "LOGIN",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Captures the Sanctum token into the environment so every other",
+                  "// request in this collection can inherit Bearer auth.",
+                  "let body = {};",
+                  "",
+                  "try {",
+                  "    body = pm.response.json();",
+                  "} catch (e) {",
+                  "    console.error('Response was not JSON. Is Accept: application/json set?');",
+                  "}",
+                  "",
+                  "pm.test('login returns 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "if (pm.response.code === 200 && body.token) {",
+                  "    pm.environment.set('token', body.token);",
+                  "    if (body.user && body.user.id) {",
+                  "        pm.environment.set('userId', body.user.id);",
+                  "    }",
+                  "    console.log('token stored in environment');",
+                  "} else {",
+                  "    pm.environment.unset('token');",
+                  "    console.warn('No token in response. Add $user->createToken(\\'api\\')->plainTextToken to UserController::login.');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"{{testUsername}}\",\n    \"password\": \"{{testPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/user/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "user",
+                "login"
+              ]
+            },
+            "description": "Run REGISTER first on a fresh database, then this. Credentials come from {{testUsername}} / {{testPassword}} so both requests always agree.\n\nThe post-response script writes `token` into the active environment. A 401 with \"Username or password invalid\" means the user does not exist yet."
+          },
+          "response": []
+        },
+        {
+          "name": "REGISTER",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (pm.response.code === 422) {",
+                  "    console.warn('422 usually means {{testEmail}} is already registered. The email column is unique, so just run LOGIN instead.');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"username\": \"{{testUsername}}\",\n    \"email\": \"{{testEmail}}\",\n    \"type\": 2,\n    \"password\": \"{{testPassword}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/user/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "user",
+                "register"
+              ]
+            },
+            "description": "UserController::register validates username, email, type, password. `phone` is not in the validated set or the users table, so it was dropped from this body."
+          },
+          "response": []
+        },
+        {
+          "name": "ME (requires token)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "me"
+              ]
+            },
+            "description": "GET /api/me is behind `auth:sanctum`. Returns 401 until LOGIN issues a real token.\n\nThis was /api/user, which collided with apiResource('user')'s index route and returned a 500."
+          },
+          "response": []
+        },
+        {
+          "name": "USER INDEX",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "user",
+                "{{userId}}"
+              ]
+            },
+            "description": "apiResource show. The user resource is registered with only(['show','update','destroy']) because UserController implements no index() or store()."
+          },
+          "response": []
+        },
+        {
+          "name": "USER UPDATE STATUS",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"status\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/user/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "user",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "USER SHOW STATUS",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/showStatus?type=2&status=1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "user",
+                "showStatus"
+              ],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "2"
+                },
+                {
+                  "key": "status",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Filters are read with $request->query(), so they belong in the query string, not the body."
+          },
+          "response": []
+        },
+        {
+          "name": "USER DELETE",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/user/{{userId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "user",
+                "{{userId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "PROJECT",
+      "item": [
+        {
+          "name": "PROJECT INDEX",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/project",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "project"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PROJECT STORE",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Chain the new id into {{projectId}} so the show/update/delete",
+                  "// requests below work without manual editing.",
+                  "try {",
+                  "    const body = pm.response.json();",
+                  "    const id = (body.data && body.data.id) || body.id;",
+                  "    if (id) {",
+                  "        pm.environment.set('projectId', id);",
+                  "    }",
+                  "} catch (e) {",
+                  "    console.error('Response was not JSON.');",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"title\": \"AI-Based Plant Disease Detection Mobile App\",\n    \"project_type\": 3,\n    \"privacy\": 1,\n    \"year_published\": 2024,\n    \"semester\": \"2nd\",\n    \"group_name\": \"GreenTech\",\n    \"member_0\": \"Diego Lim\",\n    \"member_1\": \"Patricia Ong\",\n    \"member_2\": \"Kevin Tan\",\n    \"member_3\": \"Rachel Go\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/project",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "project"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PROJECT SHOW",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/project/{{projectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "project",
+                "{{projectId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PROJECT UPDATE",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"privacy\": 0\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/project/{{projectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "project",
+                "{{projectId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "PROJECT DELETE",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/project/{{projectId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "project",
+                "{{projectId}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "AUTHOR",
+      "item": [
+        {
+          "name": "AUTHOR INDEX",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/author",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "author"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AUTHOR STORE",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"group_name\": \"Quack\",\n    \"project_id\": {{projectId}},\n    \"member_0\": \"Leader\",\n    \"member_1\": \"Programmer\",\n    \"member_2\": \"Documentator\",\n    \"member_3\": \"Member San\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/author",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "author"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AUTHOR DELETE",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/author/{{authorId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "author",
+                "{{authorId}}"
+              ]
+            },
+            "description": "AuthorController implements index, store and destroy only, so the resource is registered with only(['index','store','destroy']). There is no show or update."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "SENDMAIL",
+      "item": [
+        {
+          "name": "SENDMAIL",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"link\": \"link\",\n    \"title\": \"title\",\n    \"type\": \"type\",\n    \"year\": \"year\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/sendmail",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "sendmail"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SENDMAIL TYPE STATUS",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"link\": \"link\",\n    \"title\": \"title\",\n    \"type\": \"type\",\n    \"year\": \"year\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/sendmailTypeStatus",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "sendmailTypeStatus"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "DATABASE",
+      "item": [
+        {
+          "name": "BACKUP DATABASE TO FIREBASE",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/backup-database",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "backup-database"
+              ]
+            },
+            "description": "Unauthenticated in routes/api.php. The `auth:api` middleware is commented out, so anyone who can reach this URL can dump the database to Firebase. Worth locking down before deploying."
+          },
+          "response": []
+        },
+        {
+          "name": "RESTORE BACKUP (NOT IMPLEMENTED)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/restore-backup/{{backupFile}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "restore-backup",
+                "{{backupFile}}"
+              ]
+            },
+            "description": "No matching route in routes/api.php. Previously pointed at the production host with a hardcoded dump filename; the filename is now the `backupFile` environment variable."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "VIEWED",
+      "item": [
+        {
+          "name": "POST VIEWED (NOT IMPLEMENTED)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"project_id\": {{projectId}},\n    \"user_id\": {{userId}},\n    \"file_name\": \"fileName.pdf\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/viewed",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "viewed"
+              ]
+            },
+            "description": "No `viewed` route in routes/api.php on this branch. Returns the 404 JSON shape from bootstrap/app.php."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "LIKE_COMMENT",
+      "item": [
+        {
+          "name": "RATING (NOT IMPLEMENTED)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"project_id\": {{projectId}}\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/likecomment/rating",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "likecomment",
+                "rating"
+              ]
+            },
+            "description": "Was pinned to the production host. Switch `baseUrl` in the environment to hit production instead of editing the request."
+          },
+          "response": []
+        },
+        {
+          "name": "UPDATE (NOT IMPLEMENTED)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"rating\": 5,\n    \"comment\": null\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/likecomment/{{projectId}}/update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "likecomment",
+                "{{projectId}}",
+                "update"
+              ]
+            },
+            "description": "The old body sent the string \"null\" rather than a JSON null, which would store the literal text. Fixed here."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "COLLECTION",
+      "item": [
+        {
+          "name": "UPDATE FILETYPE (NOT IMPLEMENTED)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"filetype\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/collection-null/{{projectId}}/update",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "collection-null",
+                "{{projectId}}",
+                "update"
+              ]
+            },
+            "description": "The old body had a trailing comma, which is invalid JSON and would have been rejected before reaching the controller."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "SMS",
+      "item": [
+        {
+          "name": "PASSWORD REQUEST (NOT IMPLEMENTED)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"to\": \"{{testPhone}}\",\n    \"email\": \"{{testEmail}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/password-request",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "password-request"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SEND SMS (NOT IMPLEMENTED)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"message\": \"09 test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/send-sms",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "send-sms"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "SMS-CHEF (third party)",
+      "description": "Calls cloud.smschef.com directly, not this API. The `secret` is read from {{smsChefSecret}} and the device id from {{smsChefDevice}}; both live in the environment as secret-type variables and are intentionally blank in the exported file.",
+      "item": [
+        {
+          "name": "SEND SMS",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "secret",
+                  "value": "{{smsChefSecret}}",
+                  "type": "text"
+                },
+                {
+                  "key": "mode",
+                  "value": "devices",
+                  "type": "text"
+                },
+                {
+                  "key": "phone",
+                  "value": "{{testPhone}}",
+                  "type": "text"
+                },
+                {
+                  "key": "message",
+                  "value": "Hello Bulk Message",
+                  "type": "text"
+                },
+                {
+                  "key": "device",
+                  "value": "{{smsChefDevice}}",
+                  "type": "text"
+                },
+                {
+                  "key": "sim",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "priority",
+                  "value": "1",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://www.cloud.smschef.com/api/send/sms",
+              "protocol": "https",
+              "host": [
+                "www",
+                "cloud",
+                "smschef",
+                "com"
+              ],
+              "path": [
+                "api",
+                "send",
+                "sms"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "SEND SMS BULK",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "secret",
+                  "value": "{{smsChefSecret}}",
+                  "type": "text"
+                },
+                {
+                  "key": "mode",
+                  "value": "devices",
+                  "type": "text"
+                },
+                {
+                  "key": "numbers",
+                  "value": "{{testPhone}}",
+                  "type": "text"
+                },
+                {
+                  "key": "campaign",
+                  "value": "bulk test",
+                  "type": "text"
+                },
+                {
+                  "key": "device",
+                  "value": "{{smsChefDevice}}",
+                  "type": "text"
+                },
+                {
+                  "key": "sim",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "priority",
+                  "value": "1",
+                  "type": "text"
+                },
+                {
+                  "key": "message",
+                  "value": "Hello World!",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://www.cloud.smschef.com/api/send/sms.bulk",
+              "protocol": "https",
+              "host": [
+                "www",
+                "cloud",
+                "smschef",
+                "com"
+              ],
+              "path": [
+                "api",
+                "send",
+                "sms.bulk"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "FIREBASE PDF",
+      "item": [
+        {
+          "name": "UPLOAD FILE (ROUTE COMMENTED OUT)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/firebase-upload",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "firebase-upload"
+              ]
+            },
+            "description": "FirebaseController::uploadFile exists but its route is commented out in routes/api.php. Uncomment it to use this request. Pick a local file in the Body tab."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

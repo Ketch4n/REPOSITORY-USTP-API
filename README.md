@@ -7,6 +7,39 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Run with Docker
+
+This development setup runs the Laravel API with Apache and MySQL. It requires Docker Desktop with Docker Compose.
+
+1. If you do not already have a `.env` file, copy `.env.example` to `.env`.
+2. Start the containers from PowerShell:
+
+   ```powershell
+   docker compose up -d --build
+   ```
+
+3. Generate an application key if `APP_KEY` is empty in `.env`:
+
+   ```powershell
+   docker compose exec app php artisan key:generate
+   ```
+
+4. Create the database tables:
+
+   ```powershell
+   docker compose exec app php artisan migrate
+   ```
+
+The API is available at `http://localhost:8000`. For example, send the login request to `http://localhost:8000/api/user/login`.
+
+The Compose setup points Laravel to the `db` service automatically; inside a container, `127.0.0.1` refers to that same container, not MySQL. MySQL data is kept in a named volume when containers are stopped with `docker compose down`. Removing it with `docker compose down -v` permanently deletes the local database.
+
+To inspect container output while troubleshooting:
+
+```powershell
+docker compose logs -f app db
+```
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
